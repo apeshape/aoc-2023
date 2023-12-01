@@ -2,40 +2,26 @@ import run from "aocrunner";
 
 const parseInput = (rawInput) => rawInput;
 
-const digitsDict = {
-  one: 1,
-  two: 2,
-  three: 3,
-  four: 4,
-  five: 5,
-  six: 6,
-  seven: 7,
-  eight: 8,
-  nine: 9,
-};
-
+const wordNums = "one|two|three|four|five|six|seven|eight|nine";
+const wordArr = wordNums.split("|");
+const getWordNum = (t) => (wordArr.includes(t) ? wordArr.indexOf(t) + 1 : t);
 const findDigit = (part1) => (line) => {
-  const wordNums = "one|two|three|four|five|six|seven|eight|nine";
   const regex = part1 ? `\\d` : `\\d|${wordNums}`;
   const matches = [...line.matchAll(new RegExp(regex, "ig"))];
 
   const first = matches.sort((m1, m2) => m1.index - m2.index)[0][0];
   const last = matches.sort((m1, m2) => m2.index - m1.index)[0][0];
-  const f = digitsDict[first] ?? first;
-  const l = digitsDict[last] ?? last;
-  return Number(`${f}${l}`);
+  return Number(`${getWordNum(first)}${getWordNum(last)}`);
 };
 
-const part1 = (rawInput) => {
-  const input = parseInput(rawInput).split("\n");
-  return input.map(findDigit(true)).reduce((a, c) => a + c, 0);
-};
+const solve = (part1, rawInput) =>
+  parseInput(rawInput)
+    .split("\n")
+    .map(findDigit(part1))
+    .reduce((acc, line) => acc + line, 0);
 
-const part2 = (rawInput) => {
-  const input = parseInput(rawInput).split("\n");
-  const res = input.map(findDigit(false)).reduce((acc, line) => acc + line, 0);
-  return res;
-};
+const part1 = (rawInput) => solve(true, rawInput);
+const part2 = (rawInput) => solve(false, rawInput);
 
 run({
   part1: {
