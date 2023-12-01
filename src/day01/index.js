@@ -4,12 +4,12 @@ const parseInput = (rawInput) => rawInput.split("\n");
 
 const wordNums = "one|two|three|four|five|six|seven|eight|nine";
 const wordArr = wordNums.split("|");
-const getWordNum = (t) => (wordArr.includes(t) ? wordArr.indexOf(t) + 1 : t);
-const findDigit = (part1) => (line) => {
-  const regex = part1 ? `\\d` : `\\d|${wordNums}`;
-  const matches = [...line.matchAll(new RegExp(regex, "ig"))];
-  const s = matches.sort((m1, m2) => m1.index - m2.index);
-  return Number(`${getWordNum(s[0][0])}${getWordNum(s[s.length - 1][0])}`);
+const getNum = (t) => (wordArr.includes(t) ? wordArr.indexOf(t) + 1 : t);
+const findDigit = (part2) => (l) => {
+  const s = [
+    ...l.matchAll(new RegExp(`\\d${part2 ? `|${wordNums}` : ""}`, "ig")),
+  ].sort((m1, m2) => m1.index - m2.index);
+  return Number(`${getNum(s[0][0])}${getNum(s.at(-1)[0])}`);
 };
 
 const solve = (part1, rawInput) =>
@@ -28,7 +28,7 @@ run({
         expected: 142,
       },
     ],
-    solution: (rawInput) => solve(true, rawInput),
+    solution: (rawInput) => solve(false, rawInput),
   },
   part2: {
     tests: [
@@ -43,7 +43,7 @@ run({
         expected: 281,
       },
     ],
-    solution: (rawInput) => solve(false, rawInput),
+    solution: (rawInput) => solve(true, rawInput),
   },
   trimTestInputs: true,
   onlyTests: false,
