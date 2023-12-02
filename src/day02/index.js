@@ -1,7 +1,12 @@
 import run from "aocrunner";
 
 const parseInput = (rawInput) =>
-  rawInput.split("\n").map((l) => l.split(": ")[1].split("; "));
+  rawInput.split("\n").map((line) =>
+    line
+      .split(": ")[1]
+      .split(/; |, /)
+      .map((d) => d.split(" ")),
+  );
 
 const test = {
   red: 12,
@@ -9,27 +14,18 @@ const test = {
   blue: 14,
 };
 
-const getBag = (game) => {
-  return game.reduce((acc, set) => {
-    const d = set.split(", ").map((dice) => dice.split(" "));
-    d.forEach(([count, color]) => {
-      const c = Number(count);
-      if (!acc[color]) acc[color] = c;
-      if (c > acc[color]) acc[color] = c;
-    });
-    return acc;
+const getBag = (game) =>
+  game.reduce((a, [count, color]) => {
+    if (!a[color]) a[color] = Number(count);
+    if (Number(count) > a[color]) a[color] = Number(count);
+    return a;
   }, {});
-};
-
-const part1 = (rawInput) => {
-  const canPlay = (b) => {
-    return b.green <= test.green && b.blue <= test.blue && b.red <= test.red;
-  };
-  return parseInput(rawInput).reduce(
-    (acc, curr, idx) => (canPlay(getBag(curr)) ? (acc += idx + 1) : acc),
+const part1 = (rawInput) =>
+  parseInput(rawInput).reduce(
+    (a, g, i) =>
+      Object.entries(test).every(([k, v]) => getBag(g)[k] <= v) ? a + i + 1 : a,
     0,
   );
-};
 
 const part2 = (rawInput) =>
   parseInput(rawInput).reduce(
