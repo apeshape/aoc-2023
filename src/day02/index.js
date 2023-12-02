@@ -9,52 +9,34 @@ const test = {
   blue: 14,
 };
 
-const part1 = (rawInput) => {
-  const games = parseInput(rawInput);
-  let score = 0;
+const getBag = (game) => {
+  const b = game.reduce((acc, set) => {
+    const d = set.split(", ").map((dice) => dice.split(" "));
+    d.forEach(([count, color]) => {
+      const c = Number(count);
+      if (!acc[color]) acc[color] = c;
+      if (c > acc[color]) acc[color] = c;
+    });
+    return acc;
+  }, {});
+  return b;
+};
 
+const part1 = (rawInput) => {
   const canPlay = (b) => {
     return b.green <= test.green && b.blue <= test.blue && b.red <= test.red;
   };
-  games.forEach((game, idx) => {
-    const gameId = idx + 1;
-    const bag = {};
-    game.forEach((set) => {
-      const d = set.split(", ").map((dice) => dice.split(" "));
-      d.forEach(([count, color]) => {
-        const c = Number(count);
-        if (!bag[color]) bag[color] = c;
-        if (c > bag[color]) bag[color] = c;
-      });
-    });
-    if (canPlay(bag)) score += gameId;
-  });
-
-  return score;
+  return parseInput(rawInput).reduce(
+    (acc, curr, idx) => (canPlay(getBag(curr)) ? (acc += idx + 1) : acc),
+    0,
+  );
 };
 
-const part2 = (rawInput) => {
-  const games = parseInput(rawInput);
-  let score = 0;
-
-  games.forEach((game, idx) => {
-    const bag = {};
-    // console.log("GAME", idx + 1);
-    game.forEach((set) => {
-      const d = set.split(", ").map((dice) => dice.split(" "));
-      d.forEach(([count, color]) => {
-        const c = Number(count);
-        if (!bag[color]) bag[color] = c;
-        if (c > bag[color]) bag[color] = c;
-      });
-    });
-    const s = Object.values(bag).reduce((a, c) => a * c);
-    // console.log(bag, s, Object.values(bag));
-    score += s;
-  });
-
-  return score;
-};
+const part2 = (rawInput) =>
+  parseInput(rawInput).reduce(
+    (acc, curr) => acc + Object.values(getBag(curr)).reduce((a, c) => a * c),
+    0,
+  );
 
 const testInput = `Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
