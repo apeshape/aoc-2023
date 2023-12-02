@@ -8,7 +8,7 @@
         "solved": true,
         "result": "55834",
         "attempts": [],
-        "time": 1.708751
+        "time": 1.448789
       },
       "part2": {
         "solved": true,
@@ -16,21 +16,21 @@
         "attempts": [
           "53188"
         ],
-        "time": 2.978991
+        "time": 2.785261
       }
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "2283",
         "attempts": [],
-        "time": null
+        "time": 1.117068
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "78669",
         "attempts": [],
-        "time": null
+        "time": 1.515817
       }
     },
     {
