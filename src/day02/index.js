@@ -10,7 +10,7 @@ const test = {
 };
 
 const getBag = (game) => {
-  const b = game.reduce((acc, set) => {
+  return game.reduce((acc, set) => {
     const d = set.split(", ").map((dice) => dice.split(" "));
     d.forEach(([count, color]) => {
       const c = Number(count);
@@ -19,7 +19,6 @@ const getBag = (game) => {
     });
     return acc;
   }, {});
-  return b;
 };
 
 const part1 = (rawInput) => {
