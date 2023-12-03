@@ -24,7 +24,6 @@ const part1 = (rawInput) => {
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput);
-
   return input.reduce((acc, line, idx) => {
     const gearMatch = [...line.matchAll(new RegExp(/\*/, "g"))];
     const allNumbersMatch = [input[idx - 1], line, input[idx + 1]]
