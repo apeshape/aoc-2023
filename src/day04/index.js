@@ -5,7 +5,13 @@ const parseInput = (rawInput) =>
     line
       .split(": ")[1]
       .split(" | ")
-      .map((str) => str.split(/\s+/).filter(Boolean).map(Number)),
+      .map((str) =>
+        str
+          .split(/\s+/)
+          .filter(Boolean)
+          .map(Number)
+          .sort((a, b) => a - b),
+      ),
   );
 
 const part1 = (rawInput) => {
@@ -23,8 +29,20 @@ const part1 = (rawInput) => {
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput);
+  const cards = Array(input.length).fill(1);
 
-  return;
+  input.forEach(([winners, mine], originalCardIndex) => {
+    const intersects = winners.filter((w) => mine.includes(w)).length;
+    for (
+      let i = originalCardIndex + 1;
+      i <= originalCardIndex + intersects;
+      i++
+    ) {
+      cards[i] += cards[originalCardIndex];
+    }
+  });
+
+  return cards.reduce((a, c) => a + c);
 };
 
 const test = `Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
@@ -46,10 +64,10 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: test,
+        expected: 30,
+      },
     ],
     solution: part2,
   },
