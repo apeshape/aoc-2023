@@ -90,10 +90,36 @@ const part1 = (rawInput) => {
   return score;
 };
 
+function getShoelaceArea(input, loop) {
+  let area = 0;
+
+  const boundariesCount = loop.length;
+
+  const vertices = loop.filter((point) =>
+    "FJL7S".includes(input[point[1]][point[0]]),
+  );
+  vertices.forEach((point, idx) => {
+    const next = vertices[(idx + 1) % vertices.length];
+    area += point[0] * next[1] - point[1] * next[0];
+  });
+
+  area = Math.abs(area) / 2;
+
+  return area - boundariesCount / 2 + 1;
+}
+
 const part2 = (rawInput) => {
   const input = parseInput(rawInput);
+  const start = input.reduce((acc, curr, idx) => {
+    if (curr.includes("S")) return [curr.indexOf("S"), idx];
+    return acc;
+  }, []);
 
-  return;
+  const exits = getPossibleExits(getNeighbors(input, start), start);
+  const loopStrs = walkGrid(input, exits[0]);
+  loopStrs.unshift(JSON.stringify(start));
+  const loop = loopStrs.filter(Boolean).map(JSON.parse);
+  return getShoelaceArea(input, loop);
 };
 
 run({
@@ -120,10 +146,45 @@ LJ.LJ`,
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........`,
+        expected: 4,
+      },
+      {
+        input: `
+.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...`,
+        expected: 8,
+      },
+      {
+        input: `FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L`,
+        expected: 10,
+      },
     ],
     solution: part2,
   },
